@@ -1,0 +1,326 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  CITIZEN
+  WORKER
+  AUTHORITY
+  ADMIN
+}
+
+enum UserStatus {
+  ACTIVE
+  INACTIVE
+  AVAILABLE
+  BUSY
+}
+
+enum ComplaintCategory {
+  ROADS_POTHOLES
+  STREET_LIGHTS
+  WATER_SUPPLY
+  SANITATION_WASTE
+  DRAINAGE_SEWAGE
+  PARKS_PUBLIC_SPACES
+  PUBLIC_TRANSPORT
+  OTHER
+}
+
+enum ComplaintStatus {
+  SUBMITTED
+  UNDER_REVIEW
+  ASSIGNED
+  IN_PROGRESS
+  RESOLUTION_SUBMITTED
+  RESOLVED
+  CLOSED
+  REOPENED
+  REJECTED
+  CANCELLED
+}
+
+enum Priority {
+  LOW
+  MEDIUM
+  HIGH
+  CRITICAL
+}
+
+enum AssignmentStatus {
+  ASSIGNED
+  ACCEPTED
+  IN_PROGRESS
+  COMPLETED
+  REASSIGNED
+  CANCELLED
+}
+
+enum WorkUpdateType {
+  NOTE
+  PROGRESS
+  STATUS_CHANGE
+  EVIDENCE
+  COMPLETION
+}
+
+model User {
+  id          String      @id @default(uuid())
+  name        String      @db.VarChar(100)
+  email       String      @unique @db.VarChar(191)
+  password    String      @db.VarChar(255)
+  phone       String?     @db.VarChar(20)
+  role        Role        @default(CITIZEN)
+  status      UserStatus  @default(ACTIVE)
+
+  // Profile & role-specific information
+  avatar      String?     @db.VarChar(255)
+  address     String?     @db.VarChar(255) // For CITIZEN
+  department  String?     @db.VarChar(100) // For AUTHORITY / WORKER
+  zone        String?     @db.VarChar(100) // For AUTHORITY
+  designation String?     @db.VarChar(100) // For AUTHORITY
+  skills      Json?                        // For WORKER (e.g. array of skill strings)
+
+  // Dedicated worker profile
+  workerProfile       WorkerProfile?
+
+  // Relationships with Complaints
+  reportedComplaints  Complaint[]        @relation("CitizenComplaints")
+  assignedTasks       Complaint[]        @relation("WorkerComplaints")
+  managedComplaints   Complaint[]        @relation("AuthorityComplaints")
+  auditActions        ComplaintHistory[] @relation("HistoryActor")
+
+  // Relationships with Assignments and Work Updates
+  workerAssignments   Assignment[]       @relation("WorkerAssignments")
+  managedAssignments  Assignment[]       @relation("AuthorityAssignments")
+  workUpdates         WorkUpdate[]       @relation("WorkerWorkUpdates")
+
+  // User notifications
+  notifications       Notification[]
+
+  // Administrative audit trail
+  adminAuditLogs      AuditLog[]         @relation("AdminAuditActor")
+
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+
+  @@index([email])
+  @@index([role])
+  @@index([status])
+  @@index([department])
+  @@index([role, status])
+  @@index([createdAt])
+  @@map("users")
+}
+
+model Complaint {
+  id                  String            @id @default(uuid())
+  title               String            @db.VarChar(200)
+  description         String            @db.Text
+  category            ComplaintCategory
+  priority            Priority          @default(MEDIUM)
+  status              ComplaintStatus   @default(SUBMITTED)
+  location            String            @db.VarChar(255)
+  latitude            Float?
+  longitude           Float?
+  imageUrl            String?           @db.VarChar(500)
+  imagePublicId       String?           @db.VarChar(255)
+  evidenceMeta        Json?
+
+  // Worker task tracking fields
+  taskStatus          String?           @db.VarChar(50) // "ACCEPTED", "IN_PROGRESS", "COMPLETED"
+  acceptedAt          DateTime?
+  startedAt           DateTime?
+  resolutionNotes     String?           @db.Text
+  materialsUsed       String?           @db.VarChar(255)
+  resolutionPhotos    Json?
+
+  // Citizen feedback
+  feedback            Json?             // { rating: Int, comment: String, citizenName: String, createdAt: DateTime }
+
+  // Relationships
+  citizenId           String
+  citizen             User              @relation("CitizenComplaints", fields: [citizenId], references: [id], onDelete: Cascade)
+
+  assignedWorkerId    String?
+  assignedWorker      User?             @relation("WorkerComplaints", fields: [assignedWorkerId], references: [id], onDelete: SetNull)
+
+  assignedAuthorityId String?
+  assignedAuthority   User?             @relation("AuthorityComplaints", fields: [assignedAuthorityId], references: [id], onDelete: SetNull)
+
+  history             ComplaintHistory[]
+  assignments         Assignment[]
+  workUpdates         WorkUpdate[]
+  notifications       Notification[]
+
+  resolvedAt          DateTime?
+  createdAt           DateTime          @default(now())
+  updatedAt           DateTime          @updatedAt
+
+  @@index([citizenId])
+  @@index([status])
+  @@index([category])
+  @@index([priority])
+  @@index([assignedWorkerId])
+  @@index([assignedAuthorityId])
+  @@index([createdAt])
+  @@index([status, category])
+  @@index([status, priority])
+  @@index([citizenId, status])
+  @@index([assignedWorkerId, status])
+  @@index([resolvedAt])
+  @@index([createdAt, status])
+  @@map("complaints")
+}
+
+
+model ComplaintHistory {
+  id           String           @id @default(uuid())
+  complaintId  String
+  complaint    Complaint        @relation(fields: [complaintId], references: [id], onDelete: Cascade)
+
+  fromStatus   ComplaintStatus?
+  toStatus     ComplaintStatus?
+  action       String           @db.VarChar(100)
+  notes        String?          @db.Text
+
+  actorId      String?
+  actor        User?            @relation("HistoryActor", fields: [actorId], references: [id], onDelete: SetNull)
+
+  createdAt    DateTime         @default(now())
+
+  @@index([complaintId])
+  @@index([actorId])
+  @@index([createdAt])
+  @@map("complaint_histories")
+}
+
+model WorkerProfile {
+  id              String       @id @default(uuid())
+  userId          String       @unique
+  user            User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  department      String?      @db.VarChar(100)
+  skills          Json?
+  vehicleNumber   String?      @db.VarChar(50)
+  currentZone     String?      @db.VarChar(100)
+  isAvailable     Boolean      @default(true)
+  totalAssigned   Int          @default(0)
+  totalResolved   Int          @default(0)
+  createdAt       DateTime     @default(now())
+  updatedAt       DateTime     @updatedAt
+
+  @@index([userId])
+  @@index([department])
+  @@map("worker_profiles")
+}
+
+model Assignment {
+  id              String            @id @default(uuid())
+  complaintId     String
+  complaint       Complaint         @relation(fields: [complaintId], references: [id], onDelete: Cascade)
+
+  workerId        String
+  worker          User              @relation("WorkerAssignments", fields: [workerId], references: [id], onDelete: Restrict)
+
+  assignedById    String
+  assignedBy      User              @relation("AuthorityAssignments", fields: [assignedById], references: [id], onDelete: Restrict)
+
+  status          AssignmentStatus  @default(ASSIGNED)
+  instructions    String?           @db.Text
+
+  assignedAt      DateTime          @default(now())
+  acceptedAt      DateTime?
+  startedAt       DateTime?
+  completedAt     DateTime?
+
+  updates         WorkUpdate[]
+
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+
+  @@index([complaintId])
+  @@index([workerId])
+  @@index([assignedById])
+  @@index([status])
+  @@index([workerId, status])
+  @@index([complaintId, status])
+  @@map("assignments")
+}
+
+model WorkUpdate {
+  id              String          @id @default(uuid())
+  complaintId     String
+  complaint       Complaint       @relation(fields: [complaintId], references: [id], onDelete: Cascade)
+
+  assignmentId    String?
+  assignment      Assignment?     @relation(fields: [assignmentId], references: [id], onDelete: SetNull)
+
+  workerId        String
+  worker          User            @relation("WorkerWorkUpdates", fields: [workerId], references: [id], onDelete: Cascade)
+
+  updateType      WorkUpdateType  @default(NOTE)
+  notes           String          @db.Text
+  materialsUsed   String?         @db.VarChar(255)
+  imageUrl        String?         @db.VarChar(500)
+  imagePublicId   String?         @db.VarChar(255)
+  evidenceMeta    Json?
+
+  createdAt       DateTime        @default(now())
+
+  @@index([complaintId])
+  @@index([assignmentId])
+  @@index([workerId])
+  @@index([createdAt])
+  @@map("work_updates")
+}
+
+model Notification {
+  id          String     @id @default(uuid())
+  userId      String
+  user        User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  type        String     @db.VarChar(100) // COMPLAINT_RESOLVED, WORKER_ASSIGNED, etc.
+  title       String     @db.VarChar(200)
+  message     String     @db.Text
+  targetId    String?    @db.VarChar(100)
+  read        Boolean    @default(false)
+  complaintId String?
+  complaint   Complaint? @relation(fields: [complaintId], references: [id], onDelete: Cascade)
+  createdAt   DateTime   @default(now())
+
+  @@index([userId])
+  @@index([read])
+  @@index([complaintId])
+  @@index([userId, read])
+  @@index([createdAt])
+  @@map("notifications")
+}
+
+model AuditLog {
+  id          String    @id @default(uuid())
+  actorId     String
+  actor       User      @relation("AdminAuditActor", fields: [actorId], references: [id], onDelete: Cascade)
+  action      String    @db.VarChar(100) // USER_STATUS_CHANGE, ROLE_CHANGE, COMPLAINT_OVERRIDE, etc.
+  targetType  String    @db.VarChar(50)  // USER, COMPLAINT, WORKER, AUTHORITY, SYSTEM
+  targetId    String?   @db.VarChar(100)
+  details     Json?     // { previousValue, newValue, notes, reason }
+  ipAddress   String?   @db.VarChar(45)
+  createdAt   DateTime  @default(now())
+
+  @@index([actorId])
+  @@index([action])
+  @@index([targetType])
+  @@index([targetType, targetId])
+  @@index([createdAt])
+  @@map("audit_logs")
+}
+
+
+

@@ -1,0 +1,608 @@
+/* ==========================================================================
+   CivicFix Application Shell & Layout Styles
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   1. App Shell Grid Container
+   -------------------------------------------------------------------------- */
+
+.cf-app-shell {
+  display: flex;
+  min-height: 100vh;
+  background-color: var(--color-neutral-50);
+}
+
+.cf-shell-main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0; /* Prevents flex children from overflowing horizontally */
+  margin-left: 260px;
+  transition: margin-left var(--transition-standard);
+}
+
+.cf-app-shell.is-collapsed .cf-shell-main {
+  margin-left: 72px;
+}
+
+.cf-shell-content {
+  flex: 1;
+  padding: var(--space-6) var(--space-8);
+  max-width: 1400px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+@media (max-width: 768px) {
+  .cf-shell-content {
+    padding: var(--space-4);
+  }
+}
+
+/* --------------------------------------------------------------------------
+   2. Desktop Sidebar
+   -------------------------------------------------------------------------- */
+
+.cf-sidebar {
+  width: 260px;
+  background-color: var(--color-white);
+  border-right: 1px solid var(--color-neutral-200);
+  display: flex;
+  flex-direction: column;
+  position: fixed;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  height: 100vh;
+  z-index: 25;
+  transition: width var(--transition-standard);
+}
+
+.cf-sidebar.is-collapsed {
+  width: 72px;
+}
+
+.cf-sidebar-header {
+  padding: var(--space-4) var(--space-5);
+  border-bottom: 1px solid var(--color-neutral-200);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 64px;
+}
+
+.cf-sidebar-brand {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  text-decoration: none;
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: var(--color-neutral-950);
+}
+
+.cf-sidebar-brand-icon {
+  font-size: 1.35rem;
+}
+
+.cf-sidebar-brand-img {
+  width: 32px;
+  height: 32px;
+  object-fit: cover;
+  object-position: left center;
+  border-radius: var(--radius-sm);
+  display: inline-block;
+  flex-shrink: 0;
+}
+
+.cf-sidebar-role-badge {
+  font-size: 0.6875rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 0.15rem 0.4rem;
+  border-radius: var(--radius-sm);
+}
+
+.cf-sidebar-nav {
+  flex: 1;
+  padding: var(--space-4) var(--space-3);
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.cf-nav-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: 0.65rem 0.75rem;
+  border-radius: var(--radius-sm);
+  color: var(--color-neutral-700);
+  text-decoration: none;
+  font-size: 0.9375rem;
+  font-weight: 500;
+  transition: all var(--transition-standard);
+  position: relative;
+}
+
+.cf-nav-item:hover,
+.cf-nav-item:focus-visible {
+  background-color: var(--color-neutral-100);
+  color: var(--color-neutral-950);
+}
+
+.cf-nav-item.is-active {
+  background-color: var(--color-primary-100);
+  color: var(--color-primary-700);
+  font-weight: 600;
+}
+
+.cf-nav-icon {
+  font-size: 1.15rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  flex-shrink: 0;
+}
+
+.cf-nav-label {
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.cf-nav-badge {
+  margin-left: auto;
+  font-size: 0.75rem;
+  font-weight: 700;
+  background-color: var(--color-primary-600);
+  color: var(--color-white);
+  padding: 0.1rem 0.45rem;
+  border-radius: 9999px;
+}
+
+.cf-sidebar-header-toggle {
+  background: transparent;
+  border: 1px solid var(--color-neutral-200);
+  border-radius: var(--radius-sm);
+  color: var(--color-neutral-600);
+  width: 28px;
+  height: 28px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  padding: 0;
+  transition: all var(--transition-fast);
+}
+
+.cf-sidebar-header-toggle:hover {
+  background: var(--color-neutral-100);
+  color: var(--color-neutral-900);
+  border-color: var(--color-neutral-300);
+}
+
+.cf-sidebar.is-collapsed .cf-sidebar-header {
+  padding: var(--space-4) var(--space-2);
+  justify-content: center;
+  gap: var(--space-1);
+}
+
+.cf-sidebar.is-collapsed .cf-sidebar-role-badge {
+  display: none;
+}
+
+.cf-sidebar.is-collapsed .cf-sidebar-nav {
+  display: none;
+}
+
+.cf-sidebar.is-collapsed .cf-nav-label,
+.cf-sidebar.is-collapsed .cf-nav-badge,
+.cf-sidebar.is-collapsed .cf-sidebar-brand .cf-sidebar-brand-text,
+.cf-sidebar.is-collapsed .cf-sidebar-brand span:not(.cf-sidebar-brand-icon) {
+  display: none;
+}
+
+.cf-sidebar-footer {
+  padding: var(--space-4) var(--space-3);
+  border-top: 1px solid var(--color-neutral-200);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.cf-sidebar.is-collapsed .cf-sidebar-footer {
+  padding: var(--space-4) var(--space-2);
+}
+
+.cf-sidebar-toggle-btn,
+.cf-sidebar-logout-btn {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  width: 100%;
+  padding: 0.65rem 0.75rem;
+  border: 1px solid transparent;
+  background: transparent;
+  border-radius: var(--radius-sm);
+  color: var(--color-neutral-700);
+  font-size: 0.9375rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all var(--transition-standard);
+  justify-content: flex-start;
+}
+
+.cf-sidebar.is-collapsed .cf-sidebar-toggle-btn,
+.cf-sidebar.is-collapsed .cf-sidebar-logout-btn {
+  justify-content: center;
+  padding: 0.65rem 0;
+  border-color: var(--color-neutral-200);
+  background: var(--color-white);
+}
+
+.cf-sidebar-toggle-btn:hover {
+  background-color: var(--color-neutral-100);
+  color: var(--color-neutral-950);
+  border-color: var(--color-neutral-300);
+}
+
+.cf-sidebar-logout-btn {
+  color: var(--color-danger-600);
+}
+
+.cf-sidebar-logout-btn:hover {
+  background-color: #fee2e2;
+  color: var(--color-danger-700);
+  border-color: #fca5a5;
+}
+
+@media (max-width: 992px) {
+  .cf-sidebar {
+    display: none;
+  }
+  .cf-shell-main {
+    margin-left: 0 !important;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   3. Topbar
+   -------------------------------------------------------------------------- */
+
+.cf-topbar {
+  background-color: var(--color-white);
+  border-bottom: 1px solid var(--color-neutral-200);
+  padding: 0 var(--space-6);
+  min-height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 15;
+}
+
+.cf-topbar-left {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.cf-desktop-sidebar-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border: 1px solid var(--color-neutral-200);
+  background: var(--color-white);
+  border-radius: var(--radius-sm);
+  color: var(--color-neutral-700);
+  cursor: pointer;
+  padding: 0;
+  transition: all var(--transition-fast);
+}
+
+.cf-desktop-sidebar-toggle:hover {
+  background: var(--color-neutral-100);
+  color: var(--color-neutral-950);
+  border-color: var(--color-neutral-300);
+}
+
+.cf-menu-toggle {
+  display: none;
+  border: 1px solid var(--color-neutral-300);
+  background: var(--color-white);
+  border-radius: var(--radius-sm);
+  padding: var(--space-2);
+  cursor: pointer;
+  font-size: 1.2rem;
+  line-height: 1;
+}
+
+@media (max-width: 992px) {
+  .cf-menu-toggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
+
+.cf-topbar-title {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--color-neutral-900);
+}
+
+.cf-topbar-right {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+}
+
+/* --------------------------------------------------------------------------
+   4. Notification Trigger & Dropdown Popover
+   -------------------------------------------------------------------------- */
+
+.cf-notif-trigger-wrap {
+  position: relative;
+}
+
+.cf-notif-btn {
+  position: relative;
+  background: transparent;
+  border: 1px solid var(--color-neutral-300);
+  border-radius: 50%;
+  width: 38px;
+  height: 38px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: all var(--transition-standard);
+}
+
+.cf-notif-btn:hover,
+.cf-notif-btn:focus-visible {
+  background-color: var(--color-neutral-100);
+  border-color: var(--color-neutral-400);
+}
+
+.cf-notif-badge-pill {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  background-color: var(--color-danger-600);
+  color: var(--color-white);
+  font-size: 0.6875rem;
+  font-weight: 700;
+  height: 18px;
+  min-width: 18px;
+  border-radius: 9999px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 4px;
+  box-shadow: 0 0 0 2px var(--color-white);
+}
+
+.cf-notif-popover {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  width: min(400px, 90vw);
+  background-color: var(--color-white);
+  border: 1px solid var(--color-neutral-200);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-md);
+  z-index: 50;
+  overflow: hidden;
+}
+
+/* --------------------------------------------------------------------------
+   5. Profile Menu Dropdown
+   -------------------------------------------------------------------------- */
+
+.cf-profile-menu-wrap {
+  position: relative;
+}
+
+.cf-profile-trigger {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: var(--radius-sm);
+  padding: var(--space-1) var(--space-2);
+  cursor: pointer;
+  transition: all var(--transition-standard);
+}
+
+.cf-profile-trigger:hover,
+.cf-profile-trigger:focus-visible {
+  background-color: var(--color-neutral-100);
+  border-color: var(--color-neutral-200);
+}
+
+.cf-profile-menu-name {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--color-neutral-900);
+  text-align: left;
+}
+
+.cf-profile-menu-role {
+  font-size: 0.75rem;
+  color: var(--color-neutral-500);
+  text-transform: capitalize;
+}
+
+.cf-profile-popover {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  width: 240px;
+  background-color: var(--color-white);
+  border: 1px solid var(--color-neutral-200);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-md);
+  z-index: 50;
+  padding: var(--space-2) 0;
+}
+
+.cf-profile-popover-header {
+  padding: var(--space-3) var(--space-4);
+  border-bottom: 1px solid var(--color-neutral-100);
+}
+
+.cf-profile-popover-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-2) var(--space-4);
+  color: var(--color-neutral-700);
+  text-decoration: none;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  border: none;
+  background: none;
+  width: 100%;
+  text-align: left;
+  transition: background-color var(--transition-standard);
+}
+
+.cf-profile-popover-item:hover,
+.cf-profile-popover-item:focus-visible {
+  background-color: var(--color-neutral-100);
+  color: var(--color-neutral-950);
+}
+
+.cf-profile-popover-divider {
+  height: 1px;
+  background-color: var(--color-neutral-200);
+  margin: var(--space-2) 0;
+}
+
+/* --------------------------------------------------------------------------
+   6. Mobile Navigation Drawer
+   -------------------------------------------------------------------------- */
+
+.cf-mobile-overlay {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(17, 24, 39, 0.4);
+  z-index: 40;
+  display: flex;
+  animation: cfFadeIn 200ms ease;
+}
+
+.cf-mobile-drawer {
+  width: min(300px, 80vw);
+  background-color: var(--color-white);
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  box-shadow: var(--shadow-md);
+  animation: cfSlideInLeft 200ms ease;
+}
+
+@keyframes cfFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes cfSlideInLeft {
+  from { transform: translateX(-100%); }
+  to { transform: translateX(0); }
+}
+
+/* --------------------------------------------------------------------------
+   7. Page Header / Breadcrumb Helpers
+   -------------------------------------------------------------------------- */
+
+.cf-page-header {
+  margin-bottom: var(--space-6);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-4);
+}
+
+.cf-page-title {
+  font-size: var(--font-size-h2);
+  color: var(--color-neutral-950);
+  margin-bottom: var(--space-1);
+}
+
+.cf-page-subtitle {
+  font-size: var(--font-size-caption);
+  color: var(--color-neutral-600);
+}
+
+/* --------------------------------------------------------------------------
+   8. Responsive Showcase Grid & Dashboard Layouts
+   -------------------------------------------------------------------------- */
+
+.cf-showcase-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: var(--space-6);
+  width: 100%;
+}
+
+.cf-table-responsive {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  border-radius: var(--radius-md);
+}
+
+/* Mobile & Tablet Breakpoints */
+@media (max-width: 992px) {
+  .cf-showcase-grid {
+    grid-template-columns: 1fr !important;
+    gap: var(--space-4);
+  }
+
+  .cf-page-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-3);
+  }
+}
+
+@media (max-width: 640px) {
+  .cf-shell-content {
+    padding: var(--space-3) var(--space-3);
+  }
+
+  .cf-page-title {
+    font-size: 1.35rem;
+  }
+
+  .cf-page-subtitle {
+    font-size: 0.8125rem;
+  }
+
+  .cf-modal {
+    width: 95vw !important;
+    max-height: 92vh !important;
+    margin: 0 auto;
+  }
+
+  .cf-modal-body {
+    max-height: calc(90vh - 120px) !important;
+    overflow-y: auto !important;
+    padding: var(--space-3) !important;
+  }
+}
+
