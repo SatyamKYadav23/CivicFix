@@ -2,113 +2,95 @@
 
 **Making cities smarter, one complaint at a time.**
 
-CivicFix is a full-stack civic issue reporting and management platform designed to bridge the gap between citizens and municipal authorities. It simplifies the process of reporting local problems, automatically routes complaints to the relevant departments, and enables transparent tracking from submission to resolution.
+CivicFix is a full-stack web application designed to simplify civic issue reporting and improve coordination between citizens and municipal authorities.
 
-Instead of visiting government offices and navigating manual complaint procedures, citizens can report civic issues online and track their progress using a unique registration ID.
+From reporting potholes and garbage problems to tracking complaints and managing resolution workflows, CivicFix provides a centralized platform that makes civic issue management more accessible, transparent, and efficient.
 
-## 🚀 Key Features
+Instead of visiting government offices and dealing with lengthy manual procedures, citizens can report problems online and track their progress using a unique registration ID.
 
-- 📝 **Smart Complaint Registration:** Citizens can report civic issues such as potholes, garbage accumulation, water leakage, drainage problems, and damaged streetlights.
-- 🔄 **Automated Department Assignment:** Complaints can be routed to the appropriate authority based on the reported issue and department.
-- 🏢 **Role-Based Access Control:** Dedicated dashboards and permissions for Citizens, Admins, Authorities, and Workers.
-- 📍 **Complaint Tracking:** Track complaints using a unique registration ID and monitor their current status.
-- 👨‍🔧 **Worker Management:** Authorities can assign complaints to workers and monitor their progress.
-- ✅ **Resolution Verification:** Authorities verify completed work before marking complaints as resolved.
-- 📊 **Admin Dashboard:** Manage authorities and workers and monitor the overall complaint management process.
-- 🔐 **Secure Authentication:** JWT-based authentication and BCrypt password hashing for secure user access.
-- 📱 **Responsive Interface:** A user-friendly interface designed to work across different screen sizes.
+## 🚀 Features
+
+- 📝 **Online Complaint Registration** — Citizens can report civic issues such as potholes, garbage accumulation, water leakage, drainage problems, and damaged streetlights.
+- 🔍 **Complaint Tracking** — Track complaints using a unique registration ID.
+- 🏢 **Department-Based Assignment** — Route complaints to the appropriate municipal department based on the issue category.
+- 👥 **Role-Based Access** — Separate workflows for citizens, administrators, authorities, and workers.
+- 👨‍🔧 **Worker Management** — Authorities can assign tasks to workers and monitor their progress.
+- ✅ **Complaint Resolution** — Support a workflow in which completed work is reviewed and verified by the responsible authority.
+- 📊 **Admin Dashboard** — Centralized management of authorities, workers, and complaint operations.
+- 🔐 **Authentication and Authorization** — Secure access to application features based on user roles.
+- 📱 **Responsive UI** — A clean interface designed for different screen sizes.
 
 ## 🛠️ Tech Stack
 
 | Layer | Technology |
 |---|---|
-| Frontend | React.js (JSX) |
+| Frontend | React.js |
+| Language | JavaScript (JSX) |
+| Backend | Node.js |
+| API | REST API |
+| Database | Configure according to the current implementation |
 | Styling | CSS |
-| Backend | Java 21, Spring Boot |
-| Security | Spring Security, JWT |
-| Database | MySQL |
-| ORM | Spring Data JPA, Hibernate |
-| Authentication | JWT, BCrypt |
-| Build Tool | Maven |
+| Authentication | Based on the current backend implementation |
 | Version Control | Git, GitHub |
 
 ## 🏗️ System Architecture
 
 ```mermaid
 flowchart TD
-    A[Citizen] --> B[React Frontend]
-    C[Admin] --> B
-    D[Authority] --> B
-    E[Worker] --> B
+    A[Citizen] --> F[React Frontend]
+    B[Admin] --> F
+    C[Authority] --> F
+    D[Worker] --> F
 
-    B --> F[Spring Boot REST API]
-    F --> G[Spring Security + JWT]
-    G --> H[Service Layer]
-    H --> I[Repository Layer]
-    I --> J[(MySQL Database)]
+    F --> G[Node.js Backend]
+    G --> H[REST API]
+    H --> I[Business Logic]
+    I --> J[(Database)]
 
-    H --> K[Complaint Assignment]
-    K --> L[Department Authority]
-    L --> M[Worker Assignment]
-    M --> N[Work Completion]
-    N --> O[Authority Verification]
-    O --> P[Complaint Resolution]
+    I --> K[Complaint Management]
+    K --> L[Department Assignment]
+    L --> M[Authority]
+    M --> N[Worker Assignment]
+    N --> O[Work Completion]
+    O --> P[Authority Verification]
+    P --> Q[Complaint Resolution]
 ```
 
-## 🔄 How CivicFix Works
+## 🔄 Application Workflow
 
-### 1. Citizen Reports an Issue
-- The citizen registers or logs in.
-- Selects the category of the civic issue.
-- Provides a description and relevant details.
-- Submits the complaint and receives a unique registration ID.
+### 1. Complaint Registration
+- Citizens register or log in.
+- Select the relevant civic issue category.
+- Submit complaint details.
+- Receive a unique registration ID.
 
-### 2. Complaint Assignment
-- The backend processes the submitted complaint.
-- Based on the issue category, the system identifies the relevant department.
-- The complaint is forwarded to the corresponding authority through the assignment workflow.
+### 2. Complaint Processing
+- The backend receives and processes the complaint.
+- The complaint is associated with the relevant department.
+- The responsible authority can review and manage the complaint.
 
-### 3. Authority Reviews the Complaint
-- The authority reviews incoming complaints.
-- Assigns tasks to available workers.
-- Monitors the progress of assigned tasks.
+### 3. Worker Assignment
+- Authorities review pending complaints.
+- Assign tasks to workers.
+- Monitor the progress of ongoing work.
 
-### 4. Worker Resolves the Issue
-- The worker views assigned tasks.
-- Performs the required work.
-- Updates the task status after completion.
+### 4. Issue Resolution
+- Workers complete their assigned tasks.
+- Update the task status.
+- Authorities verify the completed work and update the complaint status.
 
-### 5. Authority Verifies Resolution
-- The authority reviews the worker's completion update.
-- Verifies the resolution.
-- Marks the complaint as resolved.
-
-### 6. Citizen Tracks Progress
-- Citizens can use their registration ID to check complaint status.
-- The complaint lifecycle provides visibility into the progress of the reported issue.
+### 5. Complaint Tracking
+- Citizens use their registration ID to check the status of their complaints.
+- Complaint progress is made easier to follow through a centralized interface.
 
 ## 👥 User Roles
 
 | Role | Responsibilities |
 |---|---|
-| Citizen | Register, submit complaints, track complaint status |
-| Admin | Manage authorities and workers, oversee the system |
-| Authority | Manage departmental complaints, assign workers, verify resolutions |
-| Worker | View assigned tasks and update completion status |
-
-## 🗄️ Database Design
-
-CivicFix uses MySQL for persistent data storage and Spring Data JPA for database interactions.
-
-Core entities include:
-
-- **Users:** Stores user information, credentials, and role information.
-- **Complaints:** Stores complaint details, category, registration ID, and status.
-- **Departments:** Represents civic departments responsible for resolving different issue categories.
-- **Assignments:** Tracks the relationship between complaints, authorities, and workers.
-- **Task Updates:** Records progress and completion updates for assigned work.
-
-The database structure can be extended to support notifications, complaint history, analytics, and audit logs.
+| Citizen | Submit complaints and track their status |
+| Admin | Manage authorities and workers and oversee operations |
+| Authority | Handle departmental complaints, assign workers, verify resolutions |
+| Worker | View assigned tasks and update work progress |
 
 ## 📂 Project Structure
 
@@ -127,37 +109,28 @@ CivicFix/
 │
 ├── backend/
 │   ├── src/
-│   │   ├── main/
-│   │   │   ├── java/
-│   │   │   │   └── com/backendSih/civifix/
-│   │   │   │       ├── config/
-│   │   │   │       ├── controller/
-│   │   │   │       ├── dto/
-│   │   │   │       ├── entity/
-│   │   │   │       ├── repository/
-│   │   │   │       ├── security/
-│   │   │   │       └── service/
-│   │   │   └── resources/
-│   │   │       └── application.properties
-│   │   └── test/
-│   └── pom.xml
+│   │   ├── controllers/
+│   │   ├── routes/
+│   │   ├── models/
+│   │   ├── middleware/
+│   │   ├── services/
+│   │   └── config/
+│   ├── package.json
+│   └── server.js
 │
 └── README.md
 ```
 
-*Note: Adjust the directory names to match the actual repository structure.*
+*The structure above is illustrative. Adjust the folder and file names to match your actual repository.*
 
 ## ⚙️ Installation and Setup
 
 ### Prerequisites
 
-Make sure you have the following installed:
-
-- Node.js and npm
-- Java 21 or compatible JDK
-- Maven
-- MySQL 8.0+
+- Node.js
+- npm
 - Git
+- Database server, if required by your backend
 
 ### 1. Clone the Repository
 
@@ -166,101 +139,83 @@ git clone https://github.com/SatyamKYadav23/CivicFix.git
 cd CivicFix
 ```
 
-### 2. Set Up the Database
-
-Create a MySQL database:
-
-```sql
-CREATE DATABASE civicfix;
-```
-
-Configure the database connection in the backend's `application.properties` file:
-
-```properties
-spring.datasource.url=jdbc:mysql://localhost:3306/civicfix
-spring.datasource.username=${DB_USERNAME}
-spring.datasource.password=${DB_PASSWORD}
-
-spring.jpa.hibernate.ddl-auto=update
-```
-
-Set your database credentials using environment variables before running the backend. Configure any additional properties required by your application.
-
-### 3. Run the Backend
-
-Navigate to the backend directory:
+### 2. Set Up the Backend
 
 ```bash
 cd backend
-```
-
-Run the Spring Boot application:
-
-```bash
-./mvnw spring-boot:run
-```
-
-On Windows:
-
-```bash
-mvnw.cmd spring-boot:run
-```
-
-The backend will run on the configured Spring Boot port, typically:
-
-```text
-http://localhost:8080
-```
-
-### 4. Run the Frontend
-
-Open a new terminal and navigate to the frontend directory:
-
-```bash
-cd frontend
-```
-
-Install dependencies:
-
-```bash
 npm install
 ```
 
-Start the development server:
+Create a `.env` file in the backend directory and add the configuration required by your application.
+
+Example:
+
+```env
+PORT=5000
+```
+
+Add your database credentials, JWT secret, or other required variables if your application uses them. Do not commit sensitive credentials.
+
+Start the backend using the script configured in `package.json`. For example:
+
+```bash
+npm start
+```
+
+For development, if a development script exists:
 
 ```bash
 npm run dev
 ```
 
-If the project uses a different frontend build tool, use the appropriate start command from `package.json`.
+### 3. Set Up the Frontend
 
-Open the local frontend URL displayed in the terminal.
+Open a new terminal:
 
-## 🔐 Authentication and Security
+```bash
+cd frontend
+npm install
+```
 
-CivicFix implements a secure authentication flow using Spring Security and JWT.
+Start the frontend:
 
-- Passwords are hashed using BCrypt.
-- JWT tokens are generated after successful authentication.
-- Protected endpoints require authentication.
-- Role-based authorization restricts access according to user permissions.
-- Administrative accounts are managed separately from citizen registration.
+```bash
+npm run dev
+```
+
+Open the local URL displayed in your terminal to access CivicFix.
+
+## 🔐 Security
+
+CivicFix is designed around role-based access and secure application workflows.
+
+Security considerations include:
+
+- Authentication for protected resources.
+- Authorization based on user roles.
+- Secure password handling.
+- Validation of incoming requests.
+- Protected administrative operations.
+- Environment-based configuration for sensitive credentials.
+
+The specific security mechanisms depend on the current backend implementation.
 
 ## 🌱 Future Enhancements
 
-- 🤖 AI-powered complaint classification and automatic routing.
-- 🗺️ Interactive maps for location-based complaint reporting.
-- 📸 Image-based issue verification.
-- 🔔 Real-time notifications for complaint updates.
-- 📈 Analytics dashboard for identifying recurring civic problems.
+- 🤖 AI-powered complaint classification.
+- 🗺️ Map-based complaint reporting and location tracking.
+- 📸 Image-based civic issue verification.
+- 🔔 Real-time complaint status notifications.
+- 📊 Advanced analytics and reporting dashboards.
 - ☁️ Cloud deployment and scalable infrastructure.
-- 📱 Mobile application for easier citizen access.
+- 📱 Dedicated mobile application.
+- ⚡ More intelligent department assignment and task prioritization.
 
 ## 🎯 Project Objective
 
-The main objective of CivicFix is to reduce the friction between citizens and municipal authorities by digitizing the complaint management lifecycle.
+CivicFix aims to bridge the gap between citizens and municipal authorities by digitizing the complete civic complaint management process.
 
-By combining automated assignment, role-based workflows, and transparent complaint tracking, CivicFix aims to improve coordination, accountability, and accessibility in civic issue resolution.
+The platform focuses on reducing manual effort, improving departmental coordination, and providing greater transparency in resolving everyday civic problems.
 
 ## 👨‍💻 Developer
 
@@ -269,10 +224,10 @@ By combining automated assignment, role-based workflows, and transparent complai
 Computer Science and Engineering Student | Full-Stack Developer
 
 - GitHub: [@SatyamKYadav23](https://github.com/SatyamKYadav23)
-- Project Repository: [CivicFix](https://github.com/SatyamKYadav23/CivicFix)
+- Repository: [CivicFix](https://github.com/SatyamKYadav23/CivicFix)
 
 ---
 
-⭐ If you find this project interesting, consider giving the repository a star!
+⭐ If you find CivicFix interesting, consider giving this repository a star!
 
-**Built with ❤️ to make civic problem-solving simpler and more transparent.**
+**Built with ❤️ to make civic problem-solving simpler and smarter.**
